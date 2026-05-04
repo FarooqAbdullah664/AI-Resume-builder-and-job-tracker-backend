@@ -39,15 +39,17 @@ export const analyzeResume = async (req, res) => {
       };
     }
 
-    // ✅ FIX: Sab fields properly handle karo
+    // ✅ aiImprovedText — corrected field priority, fallback to original
+    const aiImprovedText = (result.corrected || result.improvedText || result.improved || '').trim();
+
     const saved = await Resume.create({
-      userId:        req.user.id,
-      originalText:  resumeText,
-      aiImprovedText: result.corrected || result.improvedText || result.improved || resumeText,
-      aiScore:       Number(result.score)    || 70,
-      atsScore:      Number(result.atsScore) || 65,
-      suggestions:   Array.isArray(result.suggestions) ? result.suggestions : [],
-      structured:    result.structured || null
+      userId:         req.user.id,
+      originalText:   resumeText,
+      aiImprovedText: aiImprovedText.length > 50 ? aiImprovedText : resumeText,
+      aiScore:        Number(result.score)    || 70,
+      atsScore:       Number(result.atsScore) || 65,
+      suggestions:    Array.isArray(result.suggestions) ? result.suggestions : [],
+      structured:     result.structured || null
     });
 
     res.status(201).json(saved);
