@@ -73,7 +73,20 @@ app.use('/api/jobs',   jobRoutes);
 
 // Health check
 app.get('/api', (req, res) => {
-  res.json({ status: 'ok', message: 'ResumeAI API is running' });
+  res.json({ status: 'ok', message: 'ResumeAI API is running ✅' });
+});
+
+// Root route — health check
+app.get('/', (req, res) => {
+  res.json({ 
+    status: 'ok', 
+    message: 'ResumeAI Backend is live ✅',
+    endpoints: {
+      auth:   '/api/auth',
+      resume: '/api/resume',
+      jobs:   '/api/jobs'
+    }
+  });
 });
 
 // ── 404 ───────────────────────────────────────
